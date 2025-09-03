@@ -55,8 +55,6 @@ public class RockGame {
                     result[i] = "없음";
                 }
             }
-
-
         }
 
         // asList(result) = result 배열을 리스트로 한다.(asList)
@@ -64,6 +62,8 @@ public class RockGame {
         bWin = Collections.frequency(Arrays.asList(result), "B");
         noWin = Collections.frequency(Arrays.asList(result), "없음");
 
+        // printf -> 메소드인데 반환값이 없다.(그냥 출력만 수행함)
+        // equlas -> 메소드인데 반환값(boolean)이 있다. 반환값이 있더라도 무조건 변수에 값을 담을 필요는 없다.(당연하지만)
         System.out.println("A의 승리 횟수: "+aWin);
         System.out.println("B의 승리 횟수: "+bWin);
         System.out.println("비긴 횟수: "+noWin);
