@@ -2,22 +2,67 @@ package mvc_jdbc_test.controller;
 
 import jdbc_test.JDBCConnector;
 import mvc_jdbc_test.entity.Customer;
+import mvc_jdbc_test.entity.Order;
+import mvc_jdbc_test.view.CustomerView;
+import mvc_jdbc_test.view.OrderView;
+import oracle.sql.TIMESTAMP;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 public class MainController {
     public static void main(String[] args){
         Connection con = JDBCConnector.getConnection();
 
+//        customerListAndView(con);
+        orderListAndView(con);
+    }
+
+    public static void orderListAndView(Connection con){
+        ArrayList<Order> orderList = new ArrayList<Order>();
+
+        try {
+            String sql = "select 주문번호, 주문고객, 제품명, 수량, 배송지, 주문일자, 고객이름, 고객아이디 from 고객 c, 제품 p, 주문 o where c.고객아이디 = o.주문고객 and p.제품번호 = o.주문제품";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery(sql);
+            Order order = null;
+
+            while(rs.next()){
+                order = new Order();
+                order.setOrderNum(rs.getString("주문번호"));
+                order.setOrderCustomer(rs.getString("주문고객"));
+                order.setOrderProduct(rs.getString("제품명"));
+                order.setAuantity(rs.getInt("수량"));
+                order.setShippingAddress(rs.getString("배송지"));
+
+                // 주문일자의 경우, 자바에서 제공하는 TIMESTAMP와 SQL에서 제공하는 TIMESTAMP가
+                // 서로 달라 아래와 같이 진행해야한다.
+                order.setShippingDate(rs.getDate("주문일자"));
+
+                order.setCustomername(rs.getString("고객이름"));
+                order.setCustomerid(rs.getString("고객아이디"));
+
+                orderList.add(order);
+            }
+        } catch(SQLException e ){
+            System.out.println("SQL 오류가 발생했습니다.");
+        }
+
+        OrderView orderView = new OrderView();
+        for(Order order : orderList){
+            orderView.printOrder(order);
+        }
+    }
+
+    public static void customerListAndView(Connection con){
+        ArrayList<Customer> customerList = new ArrayList<Customer>();
+
         try {
             String sql = "select * from 고객";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            ArrayList<Customer> customerList = new ArrayList<Customer>();
             Customer customer = null;
 
             // 좌측 바의 데이터베이스 아이콘 클릭 > + 아이콘 클릭 > 데이터소스 추가 > oracle 정보 입력 후 추가.
@@ -38,5 +83,14 @@ public class MainController {
         } catch (SQLException e) {
             System.out.println("Statement or SQL Error");
         }
+
+
+        CustomerView customerView = new CustomerView();
+        customerView.printHead();
+        for(Customer customer : customerList){
+            customerView.PrintCustomer(customer);
+            System.out.println();
+        }
+        customerView.printFooter();
     }
 }

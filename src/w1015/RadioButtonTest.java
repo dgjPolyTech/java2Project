@@ -16,7 +16,8 @@ public class RadioButtonTest extends JFrame {
     // 라디오에 쓰일 string 값 배열
     String[] rbStrArr = {"루피", "조로", "상디"};
 
-    JLabel lbl = new JLabel();
+    //이미지 아이콘이 위치할 라벨. 우리는 이미지를 출력할거라 ""로 한 것
+    JLabel lbl = new JLabel("", JLabel.CENTER);
 
     public RadioButtonTest(){
         JPanel panel = new JPanel();
