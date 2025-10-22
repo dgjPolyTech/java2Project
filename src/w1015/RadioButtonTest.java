@@ -71,19 +71,19 @@ public class RadioButtonTest extends JFrame {
 
                     if(rb.getText().equals("루피")){
                         JOptionPane.showMessageDialog(null, rb.getText()+"로 이미지 설정");
-                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//luffy.jpg");
+                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//one0.jpg");
                         lbl.setIcon(icon);
                     }
 
                     if(rb.getText().equals("조로")){
                         JOptionPane.showMessageDialog(null, rb.getText()+"로 이미지 설정");
-                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//zoro.jpg");
+                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//one1.jpg");
                         lbl.setIcon(icon);
                     }
 
                     if(rb.getText().equals("상디")){
                         JOptionPane.showMessageDialog(null, rb.getText()+"로 이미지 설정");
-                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//sanji.jpg");
+                        icon = new ImageIcon("D://JAVA//Java2Project//JavaProject2//src//w1015//imgs//one2.jpg");
                         lbl.setIcon(icon);
                     }
                     
