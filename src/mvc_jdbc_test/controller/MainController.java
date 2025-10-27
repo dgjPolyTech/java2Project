@@ -5,20 +5,66 @@ import mvc_jdbc_test.entity.Customer;
 import mvc_jdbc_test.entity.Order;
 import mvc_jdbc_test.view.CustomerView;
 import mvc_jdbc_test.view.OrderView;
-import oracle.sql.TIMESTAMP;
 
+import mvc_jdbc_test.view.InputCustomerInfoView;
+
+import oracle.jdbc.proxy.annotation.Pre;
+import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainController {
+    Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args){
         Connection con = JDBCConnector.getConnection();
 
-//        customerListAndView(con);
-        orderListAndView(con);
+        // customerListAndView(con);
+        // orderListAndView(con);
+        InputCustomerAndView(con);
     }
 
+    public static void InputCustomerAndView(Connection con){
+        Scanner sc = new Scanner(System.in);
+        InputCustomerInfoView inputCustomer = new InputCustomerInfoView();
+        while(true){
+            Customer customer = inputCustomer.inputCustomerInfo();
+            CustomerView customerView = new CustomerView();
+            customerView.printHead();
+            customerView.printCustomer(customer);
+            customerView.printFooter();
+
+            String sql = "insert into 고객 values(?,?,?,?,?,?)";
+
+            try{
+                PreparedStatement pstmt = con.prepareStatement(sql);
+
+                pstmt.setString(1, customer.getCustomerid());
+                pstmt.setString(2, customer.getCustomername());
+                pstmt.setInt(3, customer.getAge());
+                pstmt.setString(4, customer.getLevel());
+                pstmt.setString(5, customer.getJob());
+                pstmt.setInt(6, customer.getReward());
+                pstmt.executeUpdate();
+                pstmt.close();
+
+            } catch(Exception e){
+                System.out.println("Statement or SQL Error");
+            }
+            System.out.print("프로그램 종료를 원하면 e를 입력: ");
+
+            String input = sc.nextLine();
+
+            if(input.equals("e")){
+                break;
+            }
+        }
+        System.out.println("프로그램이 종료되었습니다.");
+    }
+
+    // 주문별 관련 정보 출력
     public static void orderListAndView(Connection con){
         ArrayList<Order> orderList = new ArrayList<Order>();
 
@@ -56,6 +102,7 @@ public class MainController {
         }
     }
 
+    // 고객 테이블 목록 출력
     public static void customerListAndView(Connection con){
         ArrayList<Customer> customerList = new ArrayList<Customer>();
 
@@ -88,7 +135,7 @@ public class MainController {
         CustomerView customerView = new CustomerView();
         customerView.printHead();
         for(Customer customer : customerList){
-            customerView.PrintCustomer(customer);
+            customerView.printCustomer(customer);
             System.out.println();
         }
         customerView.printFooter();

@@ -6,7 +6,7 @@ import oracle.sql.OracleSQLOutput;
 public class CustomerView {
     public String title = "고객 정보";
 
-    public void PrintCustomer(Customer customer){
+    public void printCustomer(Customer customer){
         System.out.printf("* 고객명: %s\n", customer.getCustomername());
         System.out.printf("* 나이: %s\n", customer.getAge());
         System.out.printf("* 등급: %s\n", customer.getLevel());
