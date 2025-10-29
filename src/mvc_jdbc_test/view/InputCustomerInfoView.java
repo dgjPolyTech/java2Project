@@ -4,6 +4,7 @@ import mvc_jdbc_test.entity.Customer;
 
 import java.util.Scanner;
 
+// 사용자 정보를 받아 입력할 때 사용하는 view
 public class InputCustomerInfoView {
 
     // customer 타입이므로 customer 관련 데이터를 리턴.

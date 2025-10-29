@@ -26,21 +26,29 @@ public class MainController {
         InputCustomerAndView(con);
     }
 
+    // 고객 정보 입력
     public static void InputCustomerAndView(Connection con){
         Scanner sc = new Scanner(System.in);
         InputCustomerInfoView inputCustomer = new InputCustomerInfoView();
         while(true){
+            // inputCustomer의 inputCustomerInfo 메소드가 실행되며, 그 결과값으로 return 되는 customer 값이
+            // customer에 담기게 된다.
             Customer customer = inputCustomer.inputCustomerInfo();
+
+            // CustomerView를 기반으로, 입력한 customer 값을 확인차 출력한다.
             CustomerView customerView = new CustomerView();
             customerView.printHead();
             customerView.printCustomer(customer);
             customerView.printFooter();
 
+            // 실제 DB에 반영하는 부분.
             String sql = "insert into 고객 values(?,?,?,?,?,?)";
 
             try{
+                // PreparedStatement: 이름 그대로 준비된(prepared) sql 문장을 실행하기 위해 사용하는 것.
                 PreparedStatement pstmt = con.prepareStatement(sql);
 
+                // 위의 ??????의 순서대로 값을 집어 넣는다.
                 pstmt.setString(1, customer.getCustomerid());
                 pstmt.setString(2, customer.getCustomername());
                 pstmt.setInt(3, customer.getAge());
