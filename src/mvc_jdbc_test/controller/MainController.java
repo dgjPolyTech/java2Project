@@ -8,12 +8,15 @@ import mvc_jdbc_test.view.OrderView;
 
 import mvc_jdbc_test.view.InputCustomerInfoView;
 
+import mvc_jdbc_test.view.UpdateCustomerInfoView;
 import oracle.jdbc.proxy.annotation.Pre;
 import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import my_util.*;
 
 public class MainController {
     Scanner sc = new Scanner(System.in);
@@ -23,7 +26,96 @@ public class MainController {
 
         // customerListAndView(con);
         // orderListAndView(con);
-        InputCustomerAndView(con);
+        // InputCustomerAndView(con);
+        updateCustomerInfoView(con);
+    }
+
+    //
+    public static void updateCustomerInfoView(Connection con){
+        Scanner sc = new Scanner(System.in);
+        UpdateCustomerInfoView updateCustomerInfoView = new UpdateCustomerInfoView();
+
+        while(true){
+            try{
+                String sql_select = "select * from 고객 where 고객아이디 = ?";
+                Customer original_customer = new Customer(); // 정보 select 했을 때 값을 저장할 customer 변수
+
+                System.out.println("=== [[고객 정보 업데이트]] === ");
+                while(true){
+                    System.out.print("업데이트할 고객의 \"고객 아이디\"를 입력하십시오: ");
+
+                    //고객 정보 입력 시, 그 아이디에 해당하는 고객 정보를 먼저 select
+                    // 사용자에게 입력받는 (업데이트 할) 고객의 아이디
+                    String customer_id = sc.nextLine();
+
+                    while(true){
+                        if(customer_id.equals("")){
+                            System.out.println("아이디 값을 입력받지 못했습니다.");;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    //
+                    PreparedStatement ps = con.prepareStatement(sql_select);
+                    ps.setString(1, customer_id);
+
+                    ResultSet rs = ps.executeQuery();
+                    CustomerView customerView = new CustomerView();
+                    // 고객 한명의 정보만 가져오는 경우이기에, 굳이 while문을 사용할 필요가 없다.
+                    if(rs.next()){
+                        original_customer = new Customer();
+                        original_customer.setCustomerid(rs.getString("고객아이디"));
+                        original_customer.setCustomername(rs.getString("고객이름"));
+                        original_customer.setAge(rs.getInt("나이"));
+                        original_customer.setLevel(rs.getString("등급"));
+                        original_customer.setJob(rs.getString("직업"));
+                        original_customer.setReward(rs.getInt("적립금"));
+
+                        customerView.printCustomer(original_customer);
+                        break;
+                    } else {
+                        System.out.println("사용자 정보를 찾을 수 없습니다.");
+                    }
+                }
+
+
+                // 고객 정보 select 되었으면, update할 정보를 입력 받아 업데이트 진행
+                String sql_update = "update 고객 set 고객이름 = ?, 나이 = ?, 등급 = ?, 직업 = ?, 적립금 = ? where 고객아이디 = ?";
+                Customer update_info = updateCustomerInfoView.updateCustomerInfo(original_customer);
+
+                //
+                try(PreparedStatement ps_update = con.prepareStatement(sql_update)) {
+                    ps_update.setString(1, update_info.getCustomername());
+                    ps_update.setInt(2, update_info.getAge());
+                    ps_update.setString(3, update_info.getLevel());
+                    ps_update.setString(4, update_info.getJob());
+                    ps_update.setInt(5, update_info.getReward());
+                    ps_update.setString(6, original_customer.getCustomerid());
+
+                    // update 실행 후, 결과값을 1(성공)/0(실패)로 받아온다.
+                    int result = ps_update.executeUpdate();
+                    if(result == 1){
+                        System.out.println("============");
+                        System.out.println(original_customer.getCustomerid()+" 고객의 정보를 업데이트 하였습니다.");
+                    } else {
+                        System.out.println("============");
+                        System.out.println("고객 정보 업데이트에 실패했습니다. 입력값을 다시 확인해주십시오.");
+                    }
+                }
+
+                System.out.print("업데이트를 계속하시겠습니까?(종료를 원할 경우, q(소문자) 입력, 계속할 경우 아무 값이나 입력): ");
+                String retry = sc.nextLine();
+
+                if(retry.equals("q")){
+                    System.out.println("업데이트를 종료합니다.");
+                    break;
+                }
+            } catch(SQLException e){
+                // e.getMessage 옵션을 추가하면 구체적으로 어떤 문제인지 알 수 있음.
+                System.out.println("Statement or SQL Error" +e.getMessage());
+            }
+        }
     }
 
     // 고객 정보 입력
