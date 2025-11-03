@@ -22,7 +22,19 @@ public class MainController {
     Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
         Connection con = JDBCConnector.getConnection();
+
+//        while(true){
+//            System.out.println("===== 고객 관리 시스템 ======");
+//            System.out.println("1. 전체 고객 정보 확인");
+//            System.out.println("2. 주문 내역 확인");
+//            System.out.println("3. 신규 고객 정보 입력");
+//            System.out.println("4. 고객 정보 업데이트");
+//
+//            String choose = sc.nextLine();
+//
+//        }
 
         // customerListAndView(con);
         // orderListAndView(con);
@@ -33,7 +45,7 @@ public class MainController {
     //
     public static void updateCustomerInfoView(Connection con){
         Scanner sc = new Scanner(System.in);
-        UpdateCustomerInfoView updateCustomerInfoView = new UpdateCustomerInfoView();
+        InputCustomerInfoView updateCustomerInfoView = new InputCustomerInfoView();
 
         while(true){
             try{
