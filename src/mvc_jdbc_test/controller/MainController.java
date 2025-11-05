@@ -26,7 +26,7 @@ public class MainController {
         Connection con = JDBCConnector.getConnection();
 
         while(true){
-            System.out.println("===== 고객 관리 시스템 ======");
+            System.out.println("===== 고객 관리eee 시스템 ======");
             System.out.println("1. 전체 고객 정보 확인");
             System.out.println("2. 주문 내역 확인");
             System.out.println("3. 신규 고객 정보 입력");
