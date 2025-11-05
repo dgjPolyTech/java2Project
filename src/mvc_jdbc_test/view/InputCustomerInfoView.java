@@ -7,31 +7,30 @@ import java.util.Scanner;
 
 // 사용자 정보를 받아 입력할 때 사용하는 view
 public class InputCustomerInfoView {
-
     // customer 타입이므로 customer 관련 데이터를 리턴.
     public Customer inputCustomerInfo(){
         Customer customer = new Customer();
         Scanner s1 = new Scanner(System.in);
         Scanner s2 = new Scanner(System.in);
 
-        System.out.println("===== 정보 입력 =====");
+        System.out.println("\n===== 정보 입력 =====");
 
-        System.out.println(("고객 아이디 입력: "));
+        System.out.print(("* 고객 아이디 입력: "));
         String customerId = s1.nextLine();
 
-        System.out.println(("고객 이름 입력: "));
+        System.out.print(("* 고객 이름 입력: "));
         String customerName  = s1.nextLine();
 
-        System.out.println(("고객 나이 입력: "));
+        System.out.print(("* 고객 나이 입력: "));
         int customerAge = s2.nextInt();
 
-        System.out.println(("고객 등급 입력: "));
+        System.out.print(("* 고객 등급 입력: "));
         String customerLevel = s1.nextLine();
 
-        System.out.println(("고객 직업 입력: "));
+        System.out.print(("* 고객 직업 입력: "));
         String customerJob = s1.nextLine();
 
-        System.out.println(("고객 적립액 입력: "));
+        System.out.print(("* 고객 적립액 입력: "));
         int customerReward = s2.nextInt();
 
         customer.setCustomerid(customerId);

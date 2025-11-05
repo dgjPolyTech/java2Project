@@ -22,6 +22,7 @@ public class OrderView {
         System.out.println("* 주문일자: "+orderDate);
 
         System.out.println("* 배송지: "+order.getShippingAddress());
+        System.out.println("");
 //
 //        System.out.println("* 주문번호: "+order.getOrderNum());
 //        System.out.println("* 주문고객: "+order.getOrderCustomer());

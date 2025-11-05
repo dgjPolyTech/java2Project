@@ -2,11 +2,14 @@ package mvc_jdbc_test.view.my_view;
 
 
 import mvc_jdbc_test.entity.Customer;
+import mvc_jdbc_test.view.CustomerView;
 import my_util.InputInfoIsEmpty;
 
 import java.util.Scanner;
 
-public class EditCustomerView {
+public class EditCustomerView extends CustomerView {
+     String title = "사용자 정보 수정";
+
     // 업데이트 할
     public Customer updateCustomerInfo(Customer originalCustomer){
         Customer updateCustomer = new Customer();
@@ -17,8 +20,7 @@ public class EditCustomerView {
 
         // 아이디 값을 토대로 업데이트 해야하므로, 아이디 값은 미리 지정해놓는다.
         updateCustomer.setCustomerid(originalCustomer.getCustomerid());
-        System.out.println(originalCustomer.getCustomerid());
-        System.out.println("=== 수정할 정보 입력(* 수정을 원치 않는 정보는 enter 입력)");
+        //System.out.println("\n===== 수정할 정보 입력(* 수정을 원치 않는 정보는 enter 입력) =====");
 
         String customerName = InputInfoIsEmpty.InputStringIsEmpty(s1, "고객 이름", originalCustomer.getCustomername());
 
@@ -40,4 +42,12 @@ public class EditCustomerView {
 
         return updateCustomer;
     }
+    
+    // printHead 메소드 오버라이드
+    public void printHead(){
+        System.out.println("------------------");
+        System.out.println("---------"+ title +"---------");
+        System.out.println("------------------");
+    }
+
 }
