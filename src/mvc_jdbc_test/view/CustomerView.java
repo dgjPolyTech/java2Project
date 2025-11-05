@@ -12,7 +12,6 @@ public class CustomerView {
         System.out.printf("* 등급: %s\n", customer.getLevel());
         System.out.printf("* 직업: %s\n", customer.getJob());
         System.out.printf("* 적립: %s\n", customer.getReward());
-        
     }
 
     public void printHead(){

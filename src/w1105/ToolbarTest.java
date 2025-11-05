@@ -1,0 +1,81 @@
+package w1105;
+
+import centerFrame.CenterFrame;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ToolbarTest extends JFrame {
+    JLabel label = new JLabel();
+
+    JButton btnNew = new JButton(new ImageIcon("D:\\JAVA\\Java2Project\\JavaProject2\\src\\w1105\\toolbar_icons\\new.png"));
+    JButton btnOpen = new JButton(new ImageIcon("D:\\JAVA\\Java2Project\\JavaProject2\\src\\w1105\\toolbar_icons\\open.png"));
+    JButton btnClose = new JButton(new ImageIcon("D:\\JAVA\\Java2Project\\JavaProject2\\src\\w1105\\toolbar_icons\\close.png"));
+
+    JMenuItem miNew = new JMenuItem("새문서");
+    JMenuItem miOpen = new JMenuItem("열기");
+    JMenuItem miClose = new JMenuItem("닫기");
+
+    public ToolbarTest() {
+        JToolBar toolbar = new JToolBar();
+        add(toolbar, BorderLayout.NORTH);
+        add(label);
+
+        toolbar.add(btnNew);
+        toolbar.add(btnOpen);
+        toolbar.addSeparator();
+        toolbar.add(btnClose);
+
+        JMenuBar mb = new JMenuBar();
+        setJMenuBar(mb);
+        JMenu mFile = new JMenu("파일");
+        JMenu mEdit = new JMenu("편집");
+
+        mb.add(mFile);
+        mb.add(mEdit);
+
+        btnNew.addActionListener(btnListener);
+        btnOpen.addActionListener(btnListener);
+        btnClose.addActionListener(btnListener);
+
+        miNew.addActionListener(btnListener);
+        miOpen.addActionListener(btnListener);
+        miClose.addActionListener(btnListener);
+
+        setTitle("툴바 작성");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CenterFrame cf = new CenterFrame(500, 400);
+        cf.centerXY();
+        setBounds(cf.getX(), cf.getY(), cf.getFw(), cf.getFh());
+        setVisible(true);
+    }
+
+    ActionListener btnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton button = null;
+            JMenuItem item = null;
+
+            if(e.getSource() instanceof JButton){
+                button = (JButton) e.getSource();
+            } else {
+                item = (JMenuItem) e.getSource();
+            }
+
+            if(button == btnNew || item == miNew){
+                label.setText("[새문서] 항목을 선택하셨어요.~");
+            } else if(button == btnOpen || item == miOpen){
+                label.setText("[열기] 항목 선택하셨어요.~");
+            } else {
+                System.exit(0);
+            }
+        }
+    };
+
+    public static void main(String[] args){
+        System.out.println("현재 작업 디렉터리 "+System.getProperty("user.dir"));
+        new ToolbarTest();
+    }
+}

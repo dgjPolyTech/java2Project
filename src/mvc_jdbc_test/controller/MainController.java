@@ -25,21 +25,34 @@ public class MainController {
         Scanner sc = new Scanner(System.in);
         Connection con = JDBCConnector.getConnection();
 
-//        while(true){
-//            System.out.println("===== 고객 관리 시스템 ======");
-//            System.out.println("1. 전체 고객 정보 확인");
-//            System.out.println("2. 주문 내역 확인");
-//            System.out.println("3. 신규 고객 정보 입력");
-//            System.out.println("4. 고객 정보 업데이트");
-//
-//            String choose = sc.nextLine();
-//
-//        }
+        while(true){
+            System.out.println("===== 고객 관리 시스템 ======");
+            System.out.println("1. 전체 고객 정보 확인");
+            System.out.println("2. 주문 내역 확인");
+            System.out.println("3. 신규 고객 정보 입력");
+            System.out.println("4. 고객 정보 업데이트");
+            System.out.println("5. 고객 정보 삭제");
+
+            System.out.print("원하시는 서비스를 입력해주십시오. ==> ");
+            String choose = sc.nextLine();
+
+            switch(choose){
+                case "4":
+                    updateCustomerInfoView(con);
+                    break;
+
+                case "5":
+                    deleteCustomerInfoView(con);
+                    break;
+
+                default:
+                    System.out.println("올바른 값을 입력해주십시오.");
+            }
+        }
 
         // customerListAndView(con);
         // orderListAndView(con);
         // InputCustomerAndView(con);
-        updateCustomerInfoView(con);
     }
 
     //
@@ -52,9 +65,9 @@ public class MainController {
                 String sql_select = "select * from 고객 where 고객아이디 = ?";
                 Customer original_customer = new Customer(); // 정보 select 했을 때 값을 저장할 customer 변수
 
-                System.out.println("=== [[고객 정보 업데이트]] === ");
+                System.out.println("\n===== [[고객 정보 업데이트]] ===== ");
                 while(true){
-                    System.out.print("업데이트할 고객의 \"고객 아이디\"를 입력하십시오: ");
+                    System.out.print("업데이트할 고객의 \"고객 아이디\"를 입력하십시오. ==> ");
 
                     //고객 정보 입력 시, 그 아이디에 해당하는 고객 정보를 먼저 select
                     // 사용자에게 입력받는 (업데이트 할) 고객의 아이디
@@ -84,6 +97,7 @@ public class MainController {
                         original_customer.setJob(rs.getString("직업"));
                         original_customer.setReward(rs.getInt("적립금"));
 
+                        System.out.println("\n===== [[업데이트 할 사용자 정보]] =====");
                         customerView.printCustomer(original_customer);
                         break;
                     } else {
@@ -127,6 +141,94 @@ public class MainController {
                 // e.getMessage 옵션을 추가하면 구체적으로 어떤 문제인지 알 수 있음.
                 System.out.println("Statement or SQL Error" +e.getMessage());
             }
+        }
+    }
+
+    // 고객 정보 삭제 view
+    public static void deleteCustomerInfoView(Connection con){
+        Scanner sc = new Scanner(System.in);
+        Customer original_customer = new Customer(); // 정보 select 했을 때 값을 저장할 customer 변수
+
+        while(true) {
+                // 삭제할 고객의 정보를 입력받는 부분
+                System.out.println("\n===== [[고객 정보 삭제]] ===== ");
+                String customer_id; // 삭제할 고객의 아이디 입력 받는 변수
+
+                while (true) {
+                    System.out.print("삭제할 고객의 \"고객아이디\"를 입력하십시오. ==> ");
+                    customer_id = sc.nextLine();
+
+                    while (true) {
+                        if (customer_id.equals("")) {
+                            System.out.println("아이디 값을 입력받지 못했습니다.\n");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    try {
+                        String sql_select = "SELECT * FROM 고객 WHERE 고객아이디 = ?";
+
+                        PreparedStatement ps = con.prepareStatement(sql_select);
+                        ps.setString(1, customer_id);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        CustomerView customerView = new CustomerView();
+
+                        // 입력받은 아이디를 토대로, 먼저 정보를 보여준다.
+                        if (rs.next()) {
+                            System.out.println("\n===== [[삭제할 사용자 정보]] =====");
+                            original_customer = new Customer();
+
+                            original_customer.setCustomerid(rs.getString("고객아이디"));
+                            original_customer.setCustomername(rs.getString("고객이름"));
+                            original_customer.setAge(rs.getInt("나이"));
+                            original_customer.setLevel(rs.getString("등급"));
+                            original_customer.setJob(rs.getString("직업"));
+                            original_customer.setReward(rs.getInt("적립금"));
+
+                            customerView.printCustomer(original_customer);
+                        } else {
+                            System.out.println("사용자 정보를 찾을 수 없습니다.");
+                        }
+
+                        // 고객 정보를 보여줬으면, 고객의 의사를 한번 더 묻고 delete를 진행한다.
+                        String sql_delete = "DELETE FROM 고객 WHERE 고객아이디 = ?";
+
+                        System.out.println("정말로 고객아이디 \"" + customer_id + "\" 고객의 정보를 삭제하시겠습니까? 복구할 수 없습니다.");
+                        System.out.print("(* 삭제 동의: Y/y 입력, 취소: N/n 입력 ==> ");
+                        String delChoice = sc.nextLine();
+
+                        switch (delChoice) {
+                            case "Y":
+                            case "y":
+                                try(PreparedStatement ps_delete = con.prepareStatement(sql_delete)){
+                                    ps_delete.setString(1, customer_id);
+
+                                    int result = ps_delete.executeUpdate();
+
+                                    if(result == 1){
+                                        System.out.println("============");
+                                        System.out.println("고객 정보를 삭제하였습니다. ");
+                                    } else {
+                                        System.out.println("============");
+                                        System.out.println("고객 정보 삭제에 실패했습니다. 입력값을 다시 확인해주십시오.");
+                                    }
+                                }
+                                break;
+
+                            case "N":
+                            case "n":
+                                System.out.println("사용자 정보 삭제를 취소합니다.");
+                                break;
+                        }
+
+
+                    } catch (SQLException e) {
+                        System.out.println("Statement or SQL Error" + e.getMessage());
+                    }
+                }
         }
     }
 
