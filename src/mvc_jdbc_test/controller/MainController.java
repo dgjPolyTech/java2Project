@@ -1,14 +1,16 @@
 package mvc_jdbc_test.controller;
 
 import jdbc_test.JDBCConnector;
+
 import mvc_jdbc_test.entity.Customer;
 import mvc_jdbc_test.entity.Order;
+
 import mvc_jdbc_test.view.CustomerView;
 import mvc_jdbc_test.view.OrderView;
+import mvc_jdbc_test.view.my_view.EditCustomerView;
 
 import mvc_jdbc_test.view.InputCustomerInfoView;
 
-import mvc_jdbc_test.view.UpdateCustomerInfoView;
 import oracle.jdbc.proxy.annotation.Pre;
 import oracle.sql.TIMESTAMP;
 
@@ -26,7 +28,7 @@ public class MainController {
         Connection con = JDBCConnector.getConnection();
 
         while(true){
-            System.out.println("===== 고객 관리eee 시스템 ======");
+            System.out.println("===== 고객 관리 시스템 ======");
             System.out.println("1. 전체 고객 정보 확인");
             System.out.println("2. 주문 내역 확인");
             System.out.println("3. 신규 고객 정보 입력");
@@ -37,6 +39,18 @@ public class MainController {
             String choose = sc.nextLine();
 
             switch(choose){
+                case "1":
+                    customerListAndView(con);
+                    break;
+
+                case "2":
+                    orderListAndView(con);
+                    break;
+
+                case "3":
+                    InputCustomerAndView(con);
+                    break;
+
                 case "4":
                     updateCustomerInfoView(con);
                     break;
@@ -58,7 +72,7 @@ public class MainController {
     //
     public static void updateCustomerInfoView(Connection con){
         Scanner sc = new Scanner(System.in);
-        InputCustomerInfoView updateCustomerInfoView = new InputCustomerInfoView();
+        EditCustomerView editCustomerView = new EditCustomerView();
 
         while(true){
             try{
@@ -90,6 +104,7 @@ public class MainController {
                     // 고객 한명의 정보만 가져오는 경우이기에, 굳이 while문을 사용할 필요가 없다.
                     if(rs.next()){
                         original_customer = new Customer();
+
                         original_customer.setCustomerid(rs.getString("고객아이디"));
                         original_customer.setCustomername(rs.getString("고객이름"));
                         original_customer.setAge(rs.getInt("나이"));
@@ -108,7 +123,7 @@ public class MainController {
 
                 // 고객 정보 select 되었으면, update할 정보를 입력 받아 업데이트 진행
                 String sql_update = "update 고객 set 고객이름 = ?, 나이 = ?, 등급 = ?, 직업 = ?, 적립금 = ? where 고객아이디 = ?";
-                Customer update_info = updateCustomerInfoView.updateCustomerInfo(original_customer);
+                Customer update_info = editCustomerView.updateCustomerInfo(original_customer);
 
                 //
                 try(PreparedStatement ps_update = con.prepareStatement(sql_update)) {
