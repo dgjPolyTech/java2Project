@@ -246,17 +246,17 @@ public class MainController {
 
                                 if (result == 1) {
                                     System.out.println("============");
-                                    System.out.println("고객 정보를 삭제하였습니다. ");
+                                    System.out.println("고객 정보를 삭제하였습니다.\n ");
                                     break;
                                 } else {
                                     System.out.println("============");
-                                    System.out.println("고객 정보 삭제에 실패했습니다. 입력값을 다시 확인해주십시오.");
+                                    System.out.println("고객 정보 삭제에 실패했습니다. 입력값을 다시 확인해주십시오.\n");
                                     break;
                                 }
                             }
                         } else if(delChoice.equals("N") || delChoice.equals("n")) {
                             System.out.println("============");
-                            System.out.println("고객 정보 삭제를 취소합니다.");
+                            System.out.println("고객 정보 삭제를 취소합니다.\n");
                             break;
                         } else {
                             System.out.println("Y/y 혹은 N/n의 값을 입력해주십시오.\n");
