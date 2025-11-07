@@ -66,10 +66,6 @@ public class MainController {
                     System.out.println("올바른 값을 입력해주십시오.\n");
             }
         }
-
-        // customerListAndView(con);
-        // orderListAndView(con);
-        // InputCustomerAndView(con);
     }
 
     //
@@ -120,7 +116,6 @@ public class MainController {
 
                         System.out.println("\n===== [[업데이트 할 사용자 정보]] =====");
                         customerView.printCustomer(original_customer);
-                        System.out.println("============");
                         break;
                     } else {
                         System.out.println("사용자 정보를 찾을 수 없습니다.");
@@ -146,7 +141,7 @@ public class MainController {
 
                     if(result == 1){
                         System.out.println("============");
-                        System.out.println(original_customer.getCustomerid()+" 고객의 정보가 아래와 같이 업데이트 되었습니다.");
+                        System.out.println(original_customer.getCustomerid()+" 고객의 정보가 아래와 같이 업데이트 되었습니다.\n");
 
                         PreparedStatement ps = con.prepareStatement(sql_select);
                         ps.setString(1, customer_id);
@@ -174,7 +169,7 @@ public class MainController {
                     }
                 }
 
-                System.out.print("* 업데이트를 계속하시겠습니까?(종료를 원할 경우, e(소문자) 입력, 계속할 경우 아무 값이나 입력): ");
+                System.out.print("* 고객 정보 업데이트를 계속하시겠습니까?(종료를 원할 경우, e(소문자) 입력, 계속할 경우 아무 값이나 입력): ");
                 String retry = sc.nextLine();
 
                 if(retry.equals("e")){
@@ -190,88 +185,98 @@ public class MainController {
     }
 
     // 고객 정보 삭제 view
-    public static void deleteCustomerInfoView(Connection con){
+    public static void deleteCustomerInfoView(Connection con) {
         Scanner sc = new Scanner(System.in);
         Customer original_customer = new Customer(); // 정보 select 했을 때 값을 저장할 customer 변수
 
-        while(true) {
-                // 삭제할 고객의 정보를 입력받는 부분
-                System.out.println("\n===== [[고객 정보 삭제]] ===== ");
-                String customer_id; // 삭제할 고객의 아이디 입력 받는 변수
+        while (true) {
+            // 삭제할 고객의 정보를 입력받는 부분
+            System.out.println("\n===== [[고객 정보 삭제]] ===== ");
+            String customer_id; // 삭제할 고객의 아이디 입력 받는 변수
 
-                while (true) {
-                    while (true) {
-                        System.out.print("삭제할 고객의 \"고객아이디\"를 입력하십시오.: ");
-                        customer_id = sc.nextLine();
+            while (true) {
+                System.out.print("삭제할 고객의 \"고객아이디\"를 입력하십시오.: ");
+                customer_id = sc.nextLine();
 
-                        if (customer_id.equals("")) {
-                            System.out.println("아이디 값을 입력받지 못했습니다.\n");
-                        } else {
-                            break;
-                        }
-                    }
+                if (customer_id.equals("")) {
+                    System.out.println("아이디 값을 입력받지 못했습니다.\n");
+                } else {
+                    break;
+                }
+            }
 
-                    try {
-                        String sql_select = "SELECT * FROM 고객 WHERE 고객아이디 = ?";
+            // 고객 정보를 입력 받았으면, 먼저 고객의 정보를 찾는다.
+            try {
+                String sql_select = "SELECT * FROM 고객 WHERE 고객아이디 = ?";
 
-                        PreparedStatement ps = con.prepareStatement(sql_select);
-                        ps.setString(1, customer_id);
+                PreparedStatement ps = con.prepareStatement(sql_select);
+                ps.setString(1, customer_id);
 
-                        ResultSet rs = ps.executeQuery();
+                ResultSet rs = ps.executeQuery();
 
-                        CustomerView customerView = new CustomerView();
+                CustomerView customerView = new CustomerView();
 
-                        // 입력받은 아이디를 토대로, 먼저 정보를 보여준다.
-                        if (rs.next()) {
-                            System.out.println("\n===== [[삭제할 사용자 정보]] =====");
-                            original_customer = new Customer();
+                // 사용자 정보를 찾았다면, 입력받은 아이디를 토대로 먼저 정보를 보여준다.
+                if (rs.next()) {
+                    System.out.println("\n===== [[삭제할 사용자 정보]] =====");
+                    original_customer = new Customer();
 
-                            original_customer.setCustomerid(rs.getString("고객아이디"));
-                            original_customer.setCustomername(rs.getString("고객이름"));
-                            original_customer.setAge(rs.getInt("나이"));
-                            original_customer.setLevel(rs.getString("등급"));
-                            original_customer.setJob(rs.getString("직업"));
-                            original_customer.setReward(rs.getInt("적립금"));
+                    original_customer.setCustomerid(rs.getString("고객아이디"));
+                    original_customer.setCustomername(rs.getString("고객이름"));
+                    original_customer.setAge(rs.getInt("나이"));
+                    original_customer.setLevel(rs.getString("등급"));
+                    original_customer.setJob(rs.getString("직업"));
+                    original_customer.setReward(rs.getInt("적립금"));
 
-                            customerView.printCustomer(original_customer);
-                        } else {
-                            System.out.println("사용자 정보를 찾을 수 없습니다.");
-                        }
+                    customerView.printCustomer(original_customer);
 
-                        // 고객 정보를 보여줬으면, 고객의 의사를 한번 더 묻고 delete를 진행한다.
-                        String sql_delete = "DELETE FROM 고객 WHERE 고객아이디 = ?";
+                    String sql_delete = "DELETE FROM 고객 WHERE 고객아이디 = ?";
 
+
+                    while (true){
                         System.out.println("정말로 고객아이디 \"" + customer_id + "\" 고객의 정보를 삭제하시겠습니까? 복구할 수 없습니다.");
-                        System.out.print("(* 삭제 동의: Y/y 입력, 취소: N/n 입력: ");
+                        System.out.print("(* 삭제 동의: Y/y 입력, 취소: N/n 입력: ): ");
                         String delChoice = sc.nextLine();
 
-                        switch (delChoice) {
-                            case "Y":
-                            case "y":
-                                try(PreparedStatement ps_delete = con.prepareStatement(sql_delete)){
-                                    ps_delete.setString(1, customer_id);
+                        if(delChoice.equals("Y") || delChoice.equals("y")){
+                            try (PreparedStatement ps_delete = con.prepareStatement(sql_delete)) {
+                                ps_delete.setString(1, customer_id);
 
-                                    int result = ps_delete.executeUpdate();
+                                int result = ps_delete.executeUpdate();
 
-                                    if(result == 1){
-                                        System.out.println("============");
-                                        System.out.println("고객 정보를 삭제하였습니다. ");
-                                    } else {
-                                        System.out.println("============");
-                                        System.out.println("고객 정보 삭제에 실패했습니다. 입력값을 다시 확인해주십시오.");
-                                    }
+                                if (result == 1) {
+                                    System.out.println("============");
+                                    System.out.println("고객 정보를 삭제하였습니다. ");
+                                    break;
+                                } else {
+                                    System.out.println("============");
+                                    System.out.println("고객 정보 삭제에 실패했습니다. 입력값을 다시 확인해주십시오.");
+                                    break;
                                 }
-                                break;
-
-                            case "N":
-                            case "n":
-                                System.out.println("사용자 정보 삭제를 취소합니다.");
-                                break;
+                            }
+                        } else if(delChoice.equals("N") || delChoice.equals("n")) {
+                            System.out.println("============");
+                            System.out.println("고객 정보 삭제를 취소합니다.");
+                            break;
+                        } else {
+                            System.out.println("Y/y 혹은 N/n의 값을 입력해주십시오.\n");
                         }
-                    } catch (SQLException e) {
-                        System.out.println("Statement or SQL Error" + e.getMessage());
                     }
+                } else {
+                    System.out.println("사용자 정보를 찾을 수 없습니다.\n");
                 }
+            } catch (SQLException e) {
+                System.out.println("고객 정보 삭제에 실패했습니다.");
+                System.out.println("Statement or SQL Error" + e.getMessage());
+            }
+
+            System.out.print("* 고객 정보 삭제를 계속하시겠습니까?(* 종료를 원할 경우, e(소문자) 입력, 계속할 경우 아무 값이나 입력): ");
+
+            String input = sc.nextLine();
+
+            if(input.equals("e")){
+                break;
+            }
         }
     }
 
@@ -279,6 +284,7 @@ public class MainController {
     public static void InputCustomerAndView(Connection con){
         Scanner sc = new Scanner(System.in);
         InputCustomerInfoView inputCustomer = new InputCustomerInfoView();
+
         while(true){
             // inputCustomer의 inputCustomerInfo 메소드가 실행되며, 그 결과값으로 return 되는 customer 값이
             // customer에 담기게 된다.
@@ -310,7 +316,7 @@ public class MainController {
             } catch(Exception e){
                 System.out.println("Statement or SQL Error"+e.getMessage());
             }
-            System.out.print("* 종료를 원할 경우, e(소문자) 입력, 계속할 경우 아무 값이나 입력: ");
+            System.out.print("신규 고객 정보 입력을 계속하시겠습니까?(* 종료를 원할 경우, e(소문자) 입력, 계속할 경우 아무 값이나 입력): ");
 
             String input = sc.nextLine();
 

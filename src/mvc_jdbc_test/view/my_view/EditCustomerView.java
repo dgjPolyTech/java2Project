@@ -20,7 +20,7 @@ public class EditCustomerView extends CustomerView {
 
         // 아이디 값을 토대로 업데이트 해야하므로, 아이디 값은 미리 지정해놓는다.
         updateCustomer.setCustomerid(originalCustomer.getCustomerid());
-        //System.out.println("\n===== 수정할 정보 입력(* 수정을 원치 않는 정보는 enter 입력) =====");
+        System.out.println("\n===== 수정할 정보 입력(* 수정을 원치 않는 정보는 enter 입력) =====");
 
         String customerName = InputInfoIsEmpty.InputStringIsEmpty(s1, "고객 이름", originalCustomer.getCustomername());
 

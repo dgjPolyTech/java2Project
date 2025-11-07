@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class InputInfoIsEmpty {
     // nextLine으로 입력받고 빈 값인지 판단
     public static String InputStringIsEmpty(Scanner sc, String inputCol, String originValue){
-        System.out.print("수정할 \""+inputCol+"\" 정보를 입력해주십시오.: ");
+        System.out.print("* 수정할 \""+inputCol+"\" 정보를 입력해주십시오.: ");
 
         String userInput = sc.nextLine();
 
@@ -30,7 +30,7 @@ public class InputInfoIsEmpty {
         int returnNumber;
 
         while(true) {
-            System.out.print("수정할 \""+inputCol+"\" 정보를 입력해 주십시오.: ");
+            System.out.print("* 수정할 \""+inputCol+"\" 정보를 입력해 주십시오.: ");
 
             // input 자체는 똑같이 string(nextLine)으로 받는다.(isEmpty 사용 위함)
             String userInput = sc.nextLine();
@@ -46,7 +46,7 @@ public class InputInfoIsEmpty {
                     returnNumber = Integer.parseInt(userInput);
                     break;
                 } catch (NumberFormatException e) {
-                    System.out.println("숫자 값을 입력해주십시오. (현재 입력값: " + userInput + ")");
+                    System.out.println("* 숫자 값을 입력해주십시오. (현재 입력값: " + userInput + ")");
                 }
 
             }
