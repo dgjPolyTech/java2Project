@@ -68,7 +68,7 @@ public class MainController {
         }
     }
 
-    //
+    // 중간고사 요구사항 1. 고객 정보 업데이트
     public static void updateCustomerInfoView(Connection con){
         Scanner sc = new Scanner(System.in);
 
@@ -184,7 +184,7 @@ public class MainController {
         }
     }
 
-    // 고객 정보 삭제 view
+    // 중간고사 요구사항 2. 고객 정보 삭제
     public static void deleteCustomerInfoView(Connection con) {
         Scanner sc = new Scanner(System.in);
         Customer original_customer = new Customer(); // 정보 select 했을 때 값을 저장할 customer 변수
