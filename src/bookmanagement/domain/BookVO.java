@@ -1,14 +1,15 @@
 package bookmanagement.domain;
 
 public class BookVO {
-    private int isbn;
-    private String name;
-    private String publish;
-    private String author;
-    private int price;
-    private String categoryName;
+    private int isbn; // 책 번호
+    private String name; // 책 이름
+    private String publish; // 출판사
+    private String author; // 저자
+    private int price; // 가격
+    private String categoryName; // 카테고리
 
     // alt+insert 하면 getter/setter 빠르게 생성 가능
+    
     public int getIsbn() {
         return isbn;
     }

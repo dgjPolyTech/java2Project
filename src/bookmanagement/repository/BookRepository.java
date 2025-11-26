@@ -1,6 +1,7 @@
 package bookmanagement.repository;
 
 import bookmanagement.domain.BookVO;
+import oracle.jdbc.proxy.annotation.Pre;
 
 import java.awt.print.Book;
 import java.sql.Connection;
@@ -9,10 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+// 책 정보를 불러오고/입력하는 등의 기능을 이곳에 정의.
 public class BookRepository {
     ArrayList<BookVO> bookVOList;
 
     // 책을 검색할 때 사용할 메소드
+    // 검색어와 index를 매개변수로 받아, 책을 검색
     public ArrayList<BookVO> select(String searchWord, int selectedIndex) {
         Connection con = JDBCConnector.getConnection();
         bookVOList = new ArrayList<BookVO>();
@@ -58,5 +61,58 @@ public class BookRepository {
         }
 
         return bookVOList;
+    }
+
+    public void insert(BookVO vo) {
+        Connection con = JDBCConnector.getConnection();
+        String sql = "insert into book values(?,?,?,?,?,?)";
+        PreparedStatement pstmt = null;
+
+
+        try {
+            pstmt = con.prepareStatement(sql);
+
+            pstmt.setInt(1, vo.getIsbn());
+            pstmt.setString(2, vo.getName());
+            pstmt.setString(3, vo.getPublish());
+            pstmt.setString(4, vo.getAuthor());
+            pstmt.setInt(5, vo.getPrice());
+
+            int categoryId = 0; // 카테고리 아이디는 정해진 카테고리 내에서만 입력해야 하므로,
+
+            switch(vo.getCategoryName()) {
+                case "IT도서":
+                    categoryId = 10;
+                    break;
+                case "소설":
+                    categoryId = 20;
+                    break;
+                case "비소설":
+                    categoryId = 30;
+                    break;
+                case "경제":
+                    categoryId = 40;
+                    break;
+                case "사회":
+                    categoryId = 50;
+                    break;    
+            }
+
+            pstmt.setInt(6, categoryId);
+            pstmt.executeUpdate(); //executeQuery는 select할 때 쓰는거임.
+        } catch (SQLException e) {
+            System.out.println("오류 발생: "+e.getMessage());
+        } finally {
+            try{
+                if(pstmt != null)
+                    pstmt.close();
+
+                if(con != null)
+                    con.close();
+            } catch (SQLException e) {
+                System.out.println("insert close 문제 발생");
+                e.printStackTrace();
+            }
+        }
     }
 }
