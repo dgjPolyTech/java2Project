@@ -115,4 +115,81 @@ public class BookRepository {
             }
         }
     }
+
+    public void update(BookVO vo) {
+        Connection con = JDBCConnector.getConnection();
+        String sql = "update book set name=?, publish=?, author=?, price=?, category=? where isbn=?";
+        PreparedStatement pstmt = null;
+        
+        try {
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, vo.getName());
+            pstmt.setString(2, vo.getPublish());
+            pstmt.setString(3, vo.getAuthor());
+            pstmt.setInt(4, vo.getPrice());
+            
+            int categoryId = 0;
+            switch(vo.getCategoryName()) {
+                case "IT도서":
+                    categoryId = 10;
+                    break;
+                case "소설":
+                    categoryId = 20;
+                    break;
+                case "비소설":
+                    categoryId = 30;
+                    break;
+                case "경제":
+                    categoryId = 40;
+                    break;
+                case "사회":
+                    categoryId = 50;
+                    break;
+            }
+
+            pstmt.setInt(5, categoryId);
+            pstmt.setInt(6, vo.getIsbn());
+
+            pstmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try{
+                if(pstmt != null)
+                    pstmt.close();
+
+                if(con != null)
+                    con.close();
+            } catch (SQLException e) {
+                System.out.println("update close 문제 발생");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void delete(BookVO vo) {
+        Connection con = JDBCConnector.getConnection();
+        String sql = "DELETE FROM BOOK WHERE ISBN = ?";
+        PreparedStatement pstmt = null;
+
+        try {
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, vo.getIsbn());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try{
+                if(pstmt != null)
+                    pstmt.close();
+
+                if(con != null)
+                    con.close();
+            } catch (SQLException e) {
+                System.out.println("delete close 문제 발생");
+                e.printStackTrace();
+            }
+        }
+    }
 }
